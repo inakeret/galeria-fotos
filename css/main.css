@@ -1,0 +1,69 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;      /* Firefox */
+    -webkit-box-sizing: border-box;   /* Chrome, Safari */
+    -o-box-sizing: border-box;        /* Opera */
+}
+
+/* img */
+img {
+    width: 100%
+}
+
+/*header*/
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #a5d3ca;
+    padding: 20px;
+}
+
+/* Logo */
+.encabezado div{
+    width: 15%;
+}
+
+
+/* Buscador */
+.buscador {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 400px;
+    margin: 0 20px;
+    padding: 20 px 
+}
+
+/* Barra buscador */
+.buscador input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.buscador input:focus {
+    border-color: rgb(7, 160, 129);
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+.btn {
+    background: rgb(7, 160, 129);;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: rgb(5, 126, 102);
+}
