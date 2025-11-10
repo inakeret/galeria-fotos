@@ -112,7 +112,7 @@ const pintarFoto = (elemento) =>{
     const description = document.createElement("P")
     const autor = document.createElement("P")
     const favoritos = document.createElement("BUTTON")
-    imagen.src = elemento.src.original
+    imagen.src = elemento.src.portrait
     imagen.alt = elemento.alt
     description.textContent = elemento.alt
     autor.textContent = elemento.photografer

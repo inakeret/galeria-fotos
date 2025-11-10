@@ -17,7 +17,7 @@ body {
 
 /* img */
 img {
-    width: 100%
+    width: 100%;
 }
 
 /*header*/
@@ -158,9 +158,14 @@ footer p {
 }
 
 .card-container article {
-    width: 300px;
+    width: 250px;
     height: auto;
     display: flex;
+}
+
+.card-container article img{
+    height: 300px;
+    object-fit: cover;
 }
 
 
