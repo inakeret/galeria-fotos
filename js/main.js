@@ -8,7 +8,7 @@ const fragment = document.createDocumentFragment()
 const cardContainer = document.querySelector("#cardContainer")
 const paginadoContainer = document.querySelector("#paginadoContainer")
 const select= document.querySelector("#select")
-
+let categoriaActual
 
 
 /******************************************************
@@ -20,6 +20,12 @@ buscador.addEventListener("submit", (ev)=>{
     recibirFotosCategoria(ev.target.buscar.value)
 })
 
+
+document.addEventListener("click", (ev)=>{
+    if(ev.target.classList.contains("btn-paginado") && ev.target.id != "notSelect"){
+        recibirFotosCategoria(categoriaActual, ev.target.id)
+    }
+})
 /******************************************************
  * FUNCIONES
  ******************************************************/
@@ -75,12 +81,13 @@ const validarTexto = (texto) => {
  * @param {string} category 
  * @returns {Promise<Object>}
  */
-const llamarConCategoria = async(category) =>{
+const llamarConCategoria = async(category, pagina = 1) =>{
     try {
         //console.log(category)
         const categoria = validarTexto(category)
         if(categoria != null){
-            const data = await llamarApi(`${urlBase}search?query=${categoria}&locale=es-ES`)
+            categoriaActual = categoria
+            const data = await llamarApi(`${urlBase}search?query=${categoria}&page=${pagina}&per_page=20&locale=es-ES`)
             console.log(data)
             return data
         }
@@ -118,18 +125,60 @@ const pintarFoto = (elemento) =>{
 }
 
 /**
+ * Pinta el paginado para poder pasar de paginas y ver distintas fotos
+ * @param {Object} data 
+ */
+const pintarPaginado = (data) =>{
+    paginadoContainer.innerHTML=""
+    numPaginas = Math.round(data.total_results / data.per_page)
+    let page = data.page
+    if(data.page == 1 || data.page == 2){
+        page = 3
+    }
+    else if(data.page == numPaginas || data.page == numPaginas-1){
+        page = numPaginas-2
+    }
+    const lista = document.createElement("UL")
+    const previo = document.createElement("LI")
+    const botonPrevio = document.createElement("BUTTON")
+    botonPrevio.classList.add("btn-paginado")
+    botonPrevio.id = data.page==1? "notSelect" :data.page -1
+    botonPrevio.textContent = "<"
+    previo.append(botonPrevio)
+    lista.append(previo)
+    for(let i = page - 2;i<=page+2; i++){
+        const pagina = document.createElement("LI")
+        const boton = document.createElement("BUTTON")
+        boton.classList.add("btn-paginado")
+        boton.id = i
+        boton.textContent = i
+        pagina.append(boton)
+        lista.append(pagina)
+    }
+    const siguiente = document.createElement("LI")
+    const botonSiguiente = document.createElement("BUTTON")
+    botonSiguiente.classList.add("btn-paginado")
+    botonSiguiente.id = data.page==numPaginas? "notSelect" :data.page+1
+    botonSiguiente.textContent = ">"
+    siguiente.append(botonSiguiente)
+    lista.append(siguiente)
+    paginadoContainer.append(lista)
+}
+
+/**
  * Pinta las fotos del array en el dom
  * @param {Object} data
  */
 const pintarPagina = (data) => {
     select.style.display = "flex"
+    cardContainer.innerHTML = ""
     const arrayFotos = [...data.photos]
     arrayFotos.forEach(element => {
         fragment.append(pintarFoto(element))
     });
     //Añadirlo el fragment al elemento del dom
     cardContainer.append(fragment)
-    //pintarPaginado(data);
+    pintarPaginado(data);
 }
 
 
@@ -137,9 +186,9 @@ const pintarPagina = (data) => {
  * Recibir la categoria y si consigue el array de fotos lo manda a pintar
  * @param {string} categoria 
  */
-const recibirFotosCategoria = async(categoria)=>{
+const recibirFotosCategoria = async(categoria,pagina = 1)=>{
    try {
-        const resp = await llamarConCategoria(categoria)
+        const resp = await llamarConCategoria(categoria, pagina)
         if(Array.isArray(resp.photos)){
             pintarPagina(resp)
         }else{
