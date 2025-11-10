@@ -13,7 +13,7 @@
             <img src="assets/logo.png" alt="Logo de la galería">
         </div>
 
-        <form class="buscador" action="">
+        <form class="buscador" id="buscador">
             <input type="text" placeholder="Buscar imágenes..." name="buscar" required>
             <button class= "btn" type="submit">Buscar</button>
         </form>
@@ -22,8 +22,20 @@
     </header>
 
     <main>
+        <div class="escondido">
+            <form id="form-eje" >
+                <select name="eje" id="eje" type="submit">
+                    <option value="none">Seleccione el eje de la foto</option>
+                    <option value="vertical">Vertical</option>
+                    <option value="horizontal">Horizontal</option>
+                </select>
+            </form>
+        </div>
         
     </main>
+    <footer>
+        <p>copyright & Iñaki Steven</p>
+    </footer>
     
     <script src="js/main.js"></script>
 </body>
