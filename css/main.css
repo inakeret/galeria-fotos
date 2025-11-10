@@ -7,6 +7,14 @@
     -o-box-sizing: border-box;        /* Opera */
 }
 
+body {
+    
+    min-height: 100vh;
+    position: relative; 
+    display: flex;
+    flex-direction: column;
+}
+
 /* img */
 img {
     width: 100%
@@ -70,7 +78,7 @@ img {
 
 
 .escondido {
-    display: none; /* Oculto por defecto */
+    display: flex; /* Oculto por defecto */
     justify-content: center;
     align-items: center;
     margin: 0px auto;
@@ -115,9 +123,12 @@ img {
 
 
 footer {
-    position: absolute;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     left: 0;
-    bottom: 0;
+
     right: 0;
     background-color: #a5d3ca;;
     padding: 20px 10px;
@@ -126,3 +137,54 @@ footer {
 footer p {
     text-align: center;
 }
+
+
+
+/* ========== cosas nuevas ======== */
+
+.main-section {
+    min-height: 20%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-container {
+    width: 95%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.card-container article {
+    width: 300px;
+    height: auto;
+    display: flex;
+}
+
+
+
+.paginado-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 20px;
+
+}
+
+/* ========= BOTONES ========= */
+.paginado-container ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    
+}
+
+.btn-paginado {
+    padding: 0.1rem 0.8rem;
+    margin: 8px;
+    border-radius: 8px;
+    background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);
+} 
