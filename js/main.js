@@ -4,6 +4,12 @@
 const urlBase = "https://api.pexels.com/v1/"
 const apiKey = "HKLxOHGFJLAhYKSc7I1LwKdj74AWmuf9TUOhENxiC1giUHbZP8Ar4o7N"
 const buscador = document.querySelector("#buscador")
+const fragment = document.createDocumentFragment()
+const cardContainer = document.querySelector("#cardContainer")
+const paginadoContainer = document.querySelector("#paginadoContainer")
+const select= document.querySelector("#select")
+
+
 
 /******************************************************
  * EVENTOS
@@ -75,13 +81,56 @@ const llamarConCategoria = async(category) =>{
         const categoria = validarTexto(category)
         if(categoria != null){
             const data = await llamarApi(`${urlBase}search?query=${categoria}&locale=es-ES`)
-            return data.photos
+            console.log(data)
+            return data
         }
     } catch (error) {
         console.log(error)
     }
 }
 
+const obtenerTamaño = (src) =>{
+    return src.original
+}
+
+/**
+ * Dado un objeto de photos deveulve un article con la foto incluida
+ * @param {Object} elemento 
+ * @returns {HTMLBodyElement}
+ */
+const pintarFoto = (elemento) =>{
+    const card = document.createElement("ARTICLE")
+    const cardFoto = document.createElement("FIGURE")
+    const imagen = document.createElement("IMG")
+    const description = document.createElement("P")
+    const autor = document.createElement("P")
+    const favoritos = document.createElement("BUTTON")
+    imagen.src = elemento.src.original
+    imagen.alt = elemento.alt
+    description.textContent = elemento.alt
+    autor.textContent = elemento.photografer
+    favoritos.id = elemento.id
+    favoritos.classList.add("btn-favorito")
+    cardFoto.append(imagen, description, autor, favoritos)
+    card.append(cardFoto)
+    console.log(card)
+    return card
+}
+
+/**
+ * Pinta las fotos del array en el dom
+ * @param {Object} data
+ */
+const pintarPagina = (data) => {
+    select.style.display = "flex"
+    const arrayFotos = [...data.photos]
+    arrayFotos.forEach(element => {
+        fragment.append(pintarFoto(element))
+    });
+    //Añadirlo el fragment al elemento del dom
+    cardContainer.append(fragment)
+    //pintarPaginado(data);
+}
 
 
 /**
@@ -90,10 +139,9 @@ const llamarConCategoria = async(category) =>{
  */
 const recibirFotosCategoria = async(categoria)=>{
    try {
-        const arrayFotos = await llamarConCategoria(categoria)
-        if(Array.isArray(arrayFotos)){
-            //intarPagina(arrayFotos)
-            console.log(arrayFotos)
+        const resp = await llamarConCategoria(categoria)
+        if(Array.isArray(resp.photos)){
+            pintarPagina(resp)
         }else{
             throw "No hemos recibido array"
         }
