@@ -75,22 +75,25 @@ const llamarConCategoria = async(category) =>{
         const categoria = validarTexto(category)
         if(categoria != null){
             const data = await llamarApi(`${urlBase}search?query=${categoria}&locale=es-ES`)
-            return data
+            return data.photos
         }
     } catch (error) {
         console.log(error)
     }
 }
 
+
+
 /**
- * Recibi
+ * Recibir la categoria y si consigue el array de fotos lo manda a pintar
  * @param {string} categoria 
  */
 const recibirFotosCategoria = async(categoria)=>{
    try {
         const arrayFotos = await llamarConCategoria(categoria)
         if(Array.isArray(arrayFotos)){
-            pintarPagina(arrayFotos)
+            //intarPagina(arrayFotos)
+            console.log(arrayFotos)
         }else{
             throw "No hemos recibido array"
         }
