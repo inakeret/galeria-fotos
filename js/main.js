@@ -5,6 +5,7 @@ const urlBase = "https://api.pexels.com/v1/"
 const apiKey = "HKLxOHGFJLAhYKSc7I1LwKdj74AWmuf9TUOhENxiC1giUHbZP8Ar4o7N"
 const buscador = document.querySelector("#buscador")
 const fragment = document.createDocumentFragment()
+const categoriasContainer = document.querySelector("#categoriasContainer")
 const cardContainer = document.querySelector("#cardContainer")
 const paginadoContainer = document.querySelector("#paginadoContainer")
 const select= document.querySelector("#select")
@@ -81,14 +82,13 @@ const validarTexto = (texto) => {
  * @param {string} category 
  * @returns {Promise<Object>}
  */
-const llamarConCategoria = async(category, pagina = 1) =>{
+const llamarConCategoria = async(category, pagina = 1, per_page = 20) =>{
     try {
         //console.log(category)
         const categoria = validarTexto(category)
         if(categoria != null){
             categoriaActual = categoria
-            const data = await llamarApi(`${urlBase}search?query=${categoria}&page=${pagina}&per_page=20&locale=es-ES`)
-            console.log(data)
+            const data = await llamarApi(`${urlBase}search?query=${categoria}&page=${pagina}&per_page=${per_page}&locale=es-ES`)
             return data
         }
     } catch (error) {
@@ -199,6 +199,30 @@ const recibirFotosCategoria = async(categoria,pagina = 1)=>{
    }
 }
 
+const pintarCategorias = async() => {
+    const arrayCategorias = ["Naturaleza", "Ciudad" , "Comida"]
+    const promesas = arrayCategorias.map(elemento => llamarConCategoria(elemento, 1, 1))
+    const photos = await Promise.all(promesas)
+    const fotosPintar = photos.map(element => element.photos[0])
+    fotosPintar.forEach((foto,index) =>{
+        const card = document.createElement("ARTICLE")
+        card.classList.add("card-container")
+        const cardFoto = document.createElement("FIGURE")
+        cardFoto.classList.add("card")
+        const imagen = document.createElement("IMG")
+        const categoria = document.createElement("P")
+        imagen.src = foto.src.portrait
+        imagen.alt = foto.alt
+        categoria.textContent = arrayCategorias[index]
+        cardFoto.append(imagen, categoria)
+        card.append(cardFoto)
+        console.log(card)
+        fragment.append(card)
+    })
+    categoriasContainer.append(fragment)
+
+}
+
 
 
 
@@ -208,3 +232,4 @@ const recibirFotosCategoria = async(categoria,pagina = 1)=>{
 /******************************************************
  * INVOCACIONES
  ******************************************************/
+pintarCategorias()
