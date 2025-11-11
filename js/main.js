@@ -55,17 +55,21 @@ let categoriaActual
  * @type {string} key del localStorage para guardar favoritos
  */
 const key = "pexels.favorites:v1"; 
+let ejeActual = ""
+
 
 
 
 
 class FotoFavorito {
-    constructor(id,src,alt,autor, categoria){
+    constructor(id,src,alt,autor, categoria, height, width){
         this.id = id 
         this.src = src
         this.alt = alt
         this.photographer = autor
         this.categoria = categoria
+        this.height = height
+        this.width = width
     }
 
     esIgual(id){
@@ -106,7 +110,7 @@ buscador.addEventListener("submit", (ev)=>{
  */
 document.addEventListener("click", (ev)=>{
     if(ev.target.classList.contains("btn-paginado") && ev.target.id != "notSelect"){
-        recibirFotosCategoria(categoriaActual, ev.target.id)
+        recibirFotosCategoria(categoriaActual, ev.target.id,ejeActual)
     }
 
     if(ev.target.classList.contains("categoriasbtn")){
@@ -116,6 +120,19 @@ document.addEventListener("click", (ev)=>{
     if(ev.target.classList.contains("btn-favorito")){
         gestionarFavorito(ev.target)
     }
+})
+
+
+document.addEventListener("change", (ev) => {
+    ev.preventDefault()
+    if(ev.target.id == "eje"){
+        if(cardContainer){
+            gestionarEje(ev.target.value)
+        }else if(cardContainerFavoritos){
+            gestionarEjeFavorito(ev.target.value)
+        }
+    }   
+    
 })
 /******************************************************
  * FUNCIONES
@@ -172,13 +189,17 @@ const validarTexto = (texto) => {
  * @param {string} category 
  * @returns {Promise<Object>}
  */
-const llamarConCategoria = async(category, pagina = 1, per_page = 20) =>{
+const llamarConCategoria = async(category, pagina = 1,eje = "", per_page = 20) =>{
     try {
         //console.log(category)
+        let ejes = ""
         const categoria = validarTexto(category)
         if(categoria != null){
+            if(eje != ""){
+                ejes = `&orientation=${eje}`
+            }
             categoriaActual = categoria
-            const data = await llamarApi(`${urlBase}search?query=${categoria}&page=${pagina}&per_page=${per_page}&locale=es-ES`)
+            const data = await llamarApi(`${urlBase}search?query=${categoria}&page=${pagina}&per_page=${per_page}&locale=es-ES${ejes}`)
             return data
         }
     } catch (error) {
@@ -191,7 +212,7 @@ const llamarConCategoria = async(category, pagina = 1, per_page = 20) =>{
  * @param {Object} src con tamños distintos de la foto
  */
 const obtenerTamaño = (src) =>{
-    return src.portrait
+    return src.original
 }
 
 /**
@@ -316,9 +337,9 @@ const pintarPagina = (data, cardContainer, paginado = true) => {
  * Recibir la categoria y si consigue el array de fotos lo manda a pintar
  * @param {string} categoria 
  */
-const recibirFotosCategoria = async(categoria,pagina = 1)=>{
+const recibirFotosCategoria = async(categoria,pagina = 1, eje = "")=>{
    try {
-        const resp = await llamarConCategoria(categoria, pagina)
+        const resp = await llamarConCategoria(categoria, pagina,eje)
         if(Array.isArray(resp.photos)){
             pintarPagina(resp,cardContainer)
         }else{
@@ -327,6 +348,61 @@ const recibirFotosCategoria = async(categoria,pagina = 1)=>{
    } catch (error) {
     
    }
+}
+
+/**
+ * Cambia el eje de las fotos
+ * @param {string} eje 
+ */
+const gestionarEje = (eje) =>{
+    recibirFotosCategoria(categoriaActual,1,eje)
+    setTimeout( ()=>{
+        /**
+         * @type {HTMLElement}
+         */
+        const imagenCard = document.querySelectorAll(".card-container article img")
+        imagenCard.forEach(img =>{
+            if(eje == "landscape"){
+                img.style.setProperty('--height', '150px'); 
+            }else if (eje == "portrait"){
+                img.style.setProperty('--height','500px')
+            }else if (eje == "square"){
+                img.style.setProperty('--height','250px')
+            }
+        })
+    },900) 
+}
+
+/**
+ * Cambia el eje de las fotos favoritas
+ * @param {string} eje 
+ */
+const gestionarEjeFavorito = (eje) =>{
+    const arrayFavoritos = loadLocalStorage(key)
+    let array =[]
+    if(eje == "landscape"){
+        array = [...arrayFavoritos.filter(foto => foto.width>foto.height)]
+
+    }else if (eje == "portrait"){
+        array = [...arrayFavoritos.filter(foto => foto.width<foto.height)]
+    }else{
+        array = [...arrayFavoritos]
+    }
+    pintarPagina(array, cardContainerFavoritos, false)
+    setTimeout( ()=>{
+        /**
+         * @type {HTMLElement}
+         */
+        const imagenCard = document.querySelectorAll(".card-container article img")
+        imagenCard.forEach(img =>{
+            if(eje == "landscape"){
+                img.style.setProperty('--height', '150px'); 
+            }else if (eje == "portrait"){
+                img.style.setProperty('--height','500px')
+            }
+        })
+    },500)
+    
 }
 
 /**
@@ -375,7 +451,7 @@ const pintarCategoriaUnica = (foto,index, arrayCategorias) =>{
  * Pinta las categorias preseleccionadas aleatoriamente
  */
 const pintarCategorias = async() => {
-    const array = ["Naturaleza", "Ciudad" , "Comida", "Animales", "Parque", "Desertico", "Jungla", "Playa", "Espacio"]
+    const array = ["Naturaleza", "Ciudad" , "Comida", "Animales", "Parque", "Desertico", "Jungla", "Playa", "Espacio", "Personas", "Cultura", "Deportes"]
     const arrayCategorias = obtenerCategoriasAleatorias(array,3)
     const promesas = arrayCategorias.map(elemento => llamarConCategoria(elemento, 1, 1))
     const photos = await Promise.all(promesas)
@@ -452,9 +528,9 @@ const guardarFavorito = async(btn) => {
     try {
         const photo = await llamarApi(`${urlBase}/photos/${btn.id}`)
         console.log(photo)
-        const {id,src:{portrait}, alt, photographer} = photo
+        const {id,src:{original}, alt, photographer, height, width} = photo
         console.log(alt)
-        const foto = new FotoFavorito(id,portrait,alt,photographer, categoriaActual.toLowerCase())
+        const foto = new FotoFavorito(id,original,alt,photographer, categoriaActual.toLowerCase(), height, width)
         addFavorito(foto)
     } catch (error) {
         console.log(error)
@@ -499,6 +575,10 @@ const pintarFavoritos = () =>{
     pintarPagina(arrayFavoritos,cardContainerFavoritos,false)
 }
 
+/**
+ * Pinta los favorito de la categoria categoria
+ * @param {string} categoria 
+ */
 const pintarCategoriaFavorito = (categoria) =>{
     cardContainerFavoritos.innerHTML=""
     const arrayCategorias = loadLocalStorage("categorias")
