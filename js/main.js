@@ -1,13 +1,44 @@
 /******************************************************
  * VARIABLES
  ******************************************************/
+/**
+ * @type {string} urlBase url base de la api
+ */
 const urlBase = "https://api.pexels.com/v1/"
+
+/**
+ * @type {string} key de la api
+ */
 const apiKey = "HKLxOHGFJLAhYKSc7I1LwKdj74AWmuf9TUOhENxiC1giUHbZP8Ar4o7N"
+
+/**
+ * @type {HTMLFormElement}
+ */
 const buscador = document.querySelector("#buscador")
+
+/**
+ * @type {DocumentFragment}
+ */
 const fragment = document.createDocumentFragment()
+
+/**
+ * @type {HTMLElement}
+ */
 const categoriasContainer = document.querySelector("#categoriasContainer")
+
+/**
+ * @type {HTMLElement}
+ */
 const cardContainer = document.querySelector("#cardContainer")
+
+/**
+ * @type {HTMLDivElement}
+ */
 const paginadoContainer = document.querySelector("#paginadoContainer")
+
+/**
+ * @type {HTMLDivElement}
+ */
 const select= document.querySelector("#select")
 let categoriaActual
 
@@ -15,16 +46,33 @@ let categoriaActual
 /******************************************************
  * EVENTOS
  ******************************************************/
+/**
+ * Evento submit del formulario al buscar por categoria
+ * @event buscarCategoria
+ * @param {SubmitEvent} ev formulario
+ */
 buscador.addEventListener("submit", (ev)=>{
     ev.preventDefault()
-    //console.log()
-    recibirFotosCategoria(ev.target.buscar.value)
+    recibirEliminarCategoria(ev.target.buscar.value)
 })
 
-
+/**
+ * Evento global de clicks del documento
+ * 
+ *  - Si se pulsa un boton de paginado dispara recibirFotos con categoria
+ * 
+ *  - Si se pulsa un boton de categorias dispara la funcion recibirEliminarCategoria
+ * 
+ * 
+ * @param {MouseEvent} ev evento de click 
+ */
 document.addEventListener("click", (ev)=>{
     if(ev.target.classList.contains("btn-paginado") && ev.target.id != "notSelect"){
         recibirFotosCategoria(categoriaActual, ev.target.id)
+    }
+
+    if(ev.target.classList.contains("categoriasbtn")){
+        recibirEliminarCategoria(ev.target.alt)
     }
 })
 /******************************************************
@@ -96,8 +144,13 @@ const llamarConCategoria = async(category, pagina = 1, per_page = 20) =>{
     }
 }
 
+
+/**
+ * Obtener tamaño del src
+ * @param {Object} src con tamños distintos de la foto
+ */
 const obtenerTamaño = (src) =>{
-    return src.original
+    return src.portrait
 }
 
 /**
@@ -111,14 +164,17 @@ const pintarFoto = (elemento) =>{
     const imagen = document.createElement("IMG")
     const description = document.createElement("P")
     const autor = document.createElement("P")
+    const botonContainer = document.createElement("DIV")
     const favoritos = document.createElement("BUTTON")
-    imagen.src = elemento.src.portrait
+    imagen.src = obtenerTamaño(elemento.src)
     imagen.alt = elemento.alt
     description.textContent = elemento.alt
     autor.textContent = elemento.photografer
+    botonContainer.classList.add("btn-corazon")
     favoritos.id = elemento.id
     favoritos.classList.add("btn-favorito")
-    cardFoto.append(imagen, description, autor, favoritos)
+    botonContainer.append(favoritos)
+    cardFoto.append(imagen, description, autor, botonContainer)
     card.append(cardFoto)
     console.log(card)
     return card
@@ -199,28 +255,62 @@ const recibirFotosCategoria = async(categoria,pagina = 1)=>{
    }
 }
 
+/**
+ * Vaciar el container de las categorias y llamar a la api para ke nos de las fotos de la categoria seleccionada
+ * @param {string} categoria el nombre de la categoria
+ */
+const recibirEliminarCategoria = (categoria) =>{
+    categoriasContainer.innerHTML = ""
+    recibirFotosCategoria(categoria)
+}
+
+/**
+ * Funcion para obtener n cantidad de elementos aleatorios de un array
+ * @param {Array} arr array de categorias
+ * @param {number} n cantidad de elementos que queremos
+ */
+const obtenerCategoriasAleatorias = (arr, n) => {
+    const copia = [...arr];
+    copia.sort(() => Math.random() - 0.5);
+    return copia.slice(0, n);
+}
+
+/**
+ * Pinta una unica categoria 
+ * @param {Object} foto
+ * @param {index} index indice de la foto en el arrayCategorias
+ * @param {Array} arrayCategorias array de fotos
+ */
+const pintarCategoriaUnica = (foto,index, arrayCategorias) =>{
+    const card = document.createElement("ARTICLE")
+    card.classList.add("categoria-container")
+    const cardFoto = document.createElement("FIGURE")
+    cardFoto.classList.add("card")
+    const imagen = document.createElement("IMG")
+    const categoria = document.createElement("P")
+    imagen.src = foto.src.portrait
+    imagen.alt = arrayCategorias[index]
+    imagen.classList.add("categoriasbtn")
+    categoria.textContent = arrayCategorias[index]
+    cardFoto.append(imagen, categoria)
+    card.append(cardFoto)
+    return card
+}
+
+/**
+ * Pinta las categorias preseleccionadas aleatoriamente
+ */
 const pintarCategorias = async() => {
-    const arrayCategorias = ["Naturaleza", "Ciudad" , "Comida"]
+    const array = ["Naturaleza", "Ciudad" , "Comida", "Animales", "Parque", "Desertico", "Jungla", "Playa", "Espacio"]
+    const arrayCategorias = obtenerCategoriasAleatorias(array,3)
     const promesas = arrayCategorias.map(elemento => llamarConCategoria(elemento, 1, 1))
     const photos = await Promise.all(promesas)
     const fotosPintar = photos.map(element => element.photos[0])
     fotosPintar.forEach((foto,index) =>{
-        const card = document.createElement("ARTICLE")
-        card.classList.add("card-container")
-        const cardFoto = document.createElement("FIGURE")
-        cardFoto.classList.add("card")
-        const imagen = document.createElement("IMG")
-        const categoria = document.createElement("P")
-        imagen.src = foto.src.portrait
-        imagen.alt = foto.alt
-        categoria.textContent = arrayCategorias[index]
-        cardFoto.append(imagen, categoria)
-        card.append(cardFoto)
-        console.log(card)
-        fragment.append(card)
+
+        fragment.append(pintarCategoriaUnica(foto,index, arrayCategorias))
     })
     categoriasContainer.append(fragment)
-
 }
 
 

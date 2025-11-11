@@ -1,3 +1,7 @@
+/*=============================*/
+/*======== RESET Y BASE ========*/
+/*=============================*/
+/* #region:*/
 * {
     margin: 0;
     padding: 0;
@@ -19,22 +23,63 @@ body {
 img {
     width: 100%;
 }
+/* #endregion*/
 
+/*=============================*/
+/*======= LAYOUT GENERAL =======*/
+/*=============================*/
+            /* #region:*/
 /*header*/
 .encabezado {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #a5d3ca;
     padding: 20px;
+}
+
+.encabezado,   
+footer {
+    background-image: linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%);
 }
 
 /* Logo */
 .encabezado div{
-    width: 15%;
+    width: 5%;
 }
 
+main {
+    min-height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
 
+/* aplicado a main pagina-favorito */
+.main-section {
+    margin-top: 3rem;
+}
+
+footer {
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    left: 0;
+    right: 0;
+    margin-top: auto; /* para que se quede fijo abajo*/
+    padding: 20px 10px;
+}
+
+footer p {
+    text-align: center;
+}
+/* #endregion de layout*/
+
+/*========================================*/
+/*==== FORMULARIOS BUSCADOR / HEADER  ====*/
+/*========================================*/
+            /* #region:*/
 /* Buscador */
 .buscador {
     display: flex;
@@ -43,7 +88,7 @@ img {
     flex: 1;
     max-width: 400px;
     margin: 0 20px;
-    padding: 20 px 
+    padding: 20px; 
 }
 
 /* Barra buscador */
@@ -58,14 +103,15 @@ img {
 }
 
 .buscador input:focus {
-    border-color: rgb(7, 160, 129);
-    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+    border-color: rgb(196, 163, 16);
+    box-shadow: 0 0 10px rgba(172, 127, 2, 0.555);
 }
 
+/* boton del buscador */
 .btn {
-    background: rgb(7, 160, 129);;
+    background-color: rgba(0, 0, 0, 0.904);
+    border: 3px solid rgba(211, 164, 12, 0.966);
     color: white;
-    border: none;
     border-radius: 20px;
     padding: 8px 15px;
     cursor: pointer;
@@ -73,12 +119,19 @@ img {
 }
 
 .btn:hover {
-    background: rgb(5, 126, 102);
+    background: rgba(126, 231, 210, 0.664);
+    color: black;
 }
 
+/* #endregion */
 
+/*=============================*/
+/*=== SELECT DE ORIENTACION ===*/
+/*=============================*/
+            /*#region:  */
+            
 .escondido {
-    display: flex; /* Oculto por defecto */
+    display: none; /* Oculto por defecto */
     justify-content: center;
     align-items: center;
     margin: 0px auto;
@@ -120,35 +173,80 @@ img {
     border-color: #2196f3;
     box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
 }
+/*#endregion de selector de orientación*/
 
-
-footer {
-    height: 3rem;
+/*=============================*/
+/*===== CATEGORIAS (Home) =====*/
+/*=============================*/
+            /*#region:*/
+.categorias-container {
+    width: 95%;
     display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+    margin: 50px 20px;
+}
+
+.categoria-container {
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    font-family: sans-serif;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+}
+
+/* imagen categoria */
+.card img {
+    width: 100%;    
+    height: 400px;            /* Fijas la altura */
+    object-fit: cover;        /* Recorta la imagen sin deformarla */
+    border-radius: 8px;
+    display: block;
+    transform: scale(1);
+    transition: transform 0.8s ease;
+}
+
+/* titulo categoria */
+.card p {
+    position: absolute;
+    bottom: 0;
     left: 0;
-
-    right: 0;
-    background-color: #a5d3ca;;
-    padding: 20px 10px;
+    width: 100%;
+    margin: 0;
+    padding: 1rem;
+    color: white;
+    background: rgb(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translate(100%);
+    transition: transform 0.6s ease, opacity 0.6s ease;
+    border-radius: 8px;
+    font-size: large;
+}
+/* Hover: zoom suave y texto que aparece */
+.card:hover img {
+    transform: scale(1.2);
 }
 
-footer p {
-    text-align: center;
+.card:hover p {
+    opacity: 1;
+    transform: translateY(0);
 }
+/* #endregion de categorías*/
 
-
-
-/* ========== cosas nuevas ======== */
-
-.main-section {
-    min-height: 20%;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
+/*============================================*/
+/*====  GALERÍA De RESULTADOS / FAVORITOS ====*/
+/*============================================*/
+            /* #region:*/
+            
 .card-container {
     width: 95%;
     display: flex;
@@ -160,26 +258,89 @@ footer p {
 .card-container article {
     width: 250px;
     height: auto;
-    display: flex;
+    display: flex;    
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    font-family: sans-serif;
 }
 
-.card-container article img{
-    height: 300px;
-    object-fit: cover;
-}
-
-
-
-.paginado-container {
+.card-container article figure {
     width: 100%;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 20px 20px;
-
+    gap: 0.5rem;
+    margin: 0;
+    position: relative;
 }
 
-/* ========= BOTONES ========= */
+.card-container article img {
+    width: 100%;
+    height: 200px;            /* Fijas la altura */
+    object-fit: cover;        /* Recorta la imagen sin deformarla */
+    border-radius: 8px;
+    transition: transform 0.4s ease;  /* suavidad del efecto */
+}
+
+.card-container article img:hover {
+    transform: scale(1.05);    /* se acerca un poquito */
+}
+/* #endregion*/
+
+/*=============================*/
+/*======= BOTÓN FAVORITO =======*/
+/*=============================*/
+            /* #region:*/
+.btn-corazon {
+    border: 3px solid red;
+    padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2); /* Color semi-transparente */
+    backdrop-filter: blur(10px);          /* Difuminado del fondo detrás */
+    -webkit-backdrop-filter: blur(10px);  /* Compatibilidad con Safari */
+    border-radius: 15px;                  /* Bordes redondeados */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);  /* Sombra ligera */
+}
+
+.btn-favorito {
+    --color: rgb(206, 202, 202); /* color inicial */
+    height: 10px;
+    width: 10px;
+    border: none;
+    position: relative;
+    background-color: var(--color);
+    transform: rotate(-45deg);
+    margin: 5px auto;
+    cursor: pointer;
+}
+
+.btn-favorito::before, 
+.btn-favorito::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color);
+    border-radius: 50%;
+}
+
+.btn-favorito::before {
+    top: -5px;
+    left: 0;
+}
+
+.btn-favorito::after {
+    top: 0;
+    left: 5px;
+}
+/* #endregion*/
+
+/*=============================*/
+/*========= PAGiNACIÓN =========*/
+/*=============================*/
+            /* #region:*/
+            
 .paginado-container ul {
     display: flex;
     justify-content: center;
@@ -193,3 +354,75 @@ footer p {
     border-radius: 8px;
     background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);
 } 
+
+.paginado-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 20px;
+
+}
+/* #endregion*/
+
+/*===============================================================
+
+                            480px
+                    moviles horizontales        
+===============================================================*/ 
+@media (min-width: 480px) {
+    /* Ejemplo: aumentar padding general, ajustar tipografía */
+}
+
+/*===============================================================
+
+                            768px
+    Pantallas medianas tablets (algunos moviles en horizontal)           
+===============================================================*/ 
+
+@media (min-width: 768px) {
+    /* Header pasa de columna a fila */
+    /* .encabezado { max-width: 400px; margin: 0 20px; } */
+    /* .buscador { max-width: 400px; margin: 0 20px; } */
+    /* .categorias-container { flex-direction: row; justify-content: space-evenly; } */
+    /* .card-container { flex-direction: row; flex-wrap: wrap; justify-content: center; } */    
+}
+
+/*===============================================================
+
+                            1024px
+                    Pantallas grandes (laptops)         
+===============================================================*/
+
+@media (min-width: 1024px) {
+
+    /* Aumentar anchos máximos, márgenes laterales */
+    /* .main-section { width: 90%; margin: 0 auto; } */
+    /* .card-container article { width: 250% } */    
+}
+
+/*===============================================================
+
+                            1280px
+                        Monitores grandes    
+===============================================================*/
+@media (min-width: 1280px) {
+    /* añadir espacio entre columnas o aumentar tamaño de texto */
+    .card-container article {
+        width: 300px;
+    }
+
+}
+
+/*===============================================================
+
+                            1440px
+                --- XL+ (1440px en adelante) ---
+        → monitores muy amplios / pantallas de presentación            
+===============================================================*/
+
+@media (min-width: 1440px) {
+  /* Limitar ancho máximo general para no estirar demasiado */
+  /* main { max-width: 1400px; margin: 0 auto; } */
+}
+
