@@ -32,6 +32,11 @@ const categoriasContainer = document.querySelector("#categoriasContainer")
 const cardContainer = document.querySelector("#cardContainer")
 
 /**
+ * @type {HTMLElement}
+ */
+const cardContainerFavoritos = document.querySelector("#cardContainerFavoritos")
+
+/**
  * @type {HTMLDivElement}
  */
 const paginadoContainer = document.querySelector("#paginadoContainer")
@@ -40,7 +45,34 @@ const paginadoContainer = document.querySelector("#paginadoContainer")
  * @type {HTMLDivElement}
  */
 const select= document.querySelector("#select")
+
+/**
+ * @type {string} guarda la categoria actual
+ */
 let categoriaActual
+
+/**
+ * @type {string} key del localStorage para guardar favoritos
+ */
+const key = "pexels.favorites:v1"; 
+
+
+
+
+class FotoFavorito {
+    constructor(id,src,alt,autor, categoria){
+        this.id = id 
+        this.src = src
+        this.alt = alt
+        this.photographer = autor
+        this.categoria = categoria
+    }
+
+    esIgual(id){
+        return this.id == id
+    }
+
+}
 
 
 /******************************************************
@@ -53,7 +85,13 @@ let categoriaActual
  */
 buscador.addEventListener("submit", (ev)=>{
     ev.preventDefault()
-    recibirEliminarCategoria(ev.target.buscar.value)
+    if(cardContainer){
+        recibirEliminarCategoria(ev.target.buscar.value)
+    }else if(cardContainerFavoritos){
+        pintarCategoriaFavorito(ev.target.buscar.value)
+    }
+    ev.target.buscar.value = ""
+    
 })
 
 /**
@@ -73,6 +111,10 @@ document.addEventListener("click", (ev)=>{
 
     if(ev.target.classList.contains("categoriasbtn")){
         recibirEliminarCategoria(ev.target.alt)
+    }
+
+    if(ev.target.classList.contains("btn-favorito")){
+        gestionarFavorito(ev.target)
     }
 })
 /******************************************************
@@ -144,7 +186,6 @@ const llamarConCategoria = async(category, pagina = 1, per_page = 20) =>{
     }
 }
 
-
 /**
  * Obtener tamaño del src
  * @param {Object} src con tamños distintos de la foto
@@ -154,11 +195,30 @@ const obtenerTamaño = (src) =>{
 }
 
 /**
+ * Devuelve si una foto es favorito o no
+ * @param {number} id 
+ * @returns {boolean}
+ */
+const esFavorito = (id, arrayFavoritos) =>{
+    if(arrayFavoritos.length == 0){
+        return false
+    }else{
+        if(arrayFavoritos.some(element => element.id == id)){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+
+}
+
+/**
  * Dado un objeto de photos deveulve un article con la foto incluida
  * @param {Object} elemento 
  * @returns {HTMLBodyElement}
  */
-const pintarFoto = (elemento) =>{
+const pintarFoto = (elemento, arrayFavoritos, paginado) =>{
     const card = document.createElement("ARTICLE")
     const cardFoto = document.createElement("FIGURE")
     const imagen = document.createElement("IMG")
@@ -166,17 +226,25 @@ const pintarFoto = (elemento) =>{
     const autor = document.createElement("P")
     const botonContainer = document.createElement("DIV")
     const favoritos = document.createElement("BUTTON")
-    imagen.src = obtenerTamaño(elemento.src)
+    if(paginado){
+        imagen.src = obtenerTamaño(elemento.src)
+        description.textContent = elemento.alt
+        autor.textContent = elemento.photographer
+    }
+    else{
+        imagen.src = elemento.src
+    } 
     imagen.alt = elemento.alt
-    description.textContent = elemento.alt
-    autor.textContent = elemento.photografer
+
     botonContainer.classList.add("btn-corazon")
     favoritos.id = elemento.id
     favoritos.classList.add("btn-favorito")
+    if(esFavorito(elemento.id,arrayFavoritos)){
+        favoritos.style.setProperty('--color', 'red'); 
+    }
     botonContainer.append(favoritos)
     cardFoto.append(imagen, description, autor, botonContainer)
     card.append(cardFoto)
-    console.log(card)
     return card
 }
 
@@ -225,16 +293,22 @@ const pintarPaginado = (data) =>{
  * Pinta las fotos del array en el dom
  * @param {Object} data
  */
-const pintarPagina = (data) => {
+const pintarPagina = (data, cardContainer, paginado = true) => {
     select.style.display = "flex"
     cardContainer.innerHTML = ""
-    const arrayFotos = [...data.photos]
+    let arrayFotos
+    if(paginado){
+        arrayFotos = [...data.photos]
+        pintarPaginado(data);
+    }else{
+        arrayFotos = [...data]
+    }
+    const arrayFavoritos = loadLocalStorage(key)
     arrayFotos.forEach(element => {
-        fragment.append(pintarFoto(element))
+        fragment.append(pintarFoto(element, arrayFavoritos,paginado))
     });
     //Añadirlo el fragment al elemento del dom
     cardContainer.append(fragment)
-    pintarPaginado(data);
 }
 
 
@@ -246,7 +320,7 @@ const recibirFotosCategoria = async(categoria,pagina = 1)=>{
    try {
         const resp = await llamarConCategoria(categoria, pagina)
         if(Array.isArray(resp.photos)){
-            pintarPagina(resp)
+            pintarPagina(resp,cardContainer)
         }else{
             throw "No hemos recibido array"
         }
@@ -307,19 +381,150 @@ const pintarCategorias = async() => {
     const photos = await Promise.all(promesas)
     const fotosPintar = photos.map(element => element.photos[0])
     fotosPintar.forEach((foto,index) =>{
-
         fragment.append(pintarCategoriaUnica(foto,index, arrayCategorias))
     })
     categoriasContainer.append(fragment)
 }
 
+/**
+ * obtener del localStorage
+ * @param {string} clave 
+ * @returns 
+ */
+const loadLocalStorage = (clave) => {
+
+    return  JSON.parse(localStorage.getItem(clave) || "[]"); 
+}
+
+/**
+ * Guarda el array en localStorage
+ * @param {string} clave 
+ * @param {Array} arr 
+ * @returns 
+ */
+const setLocalStorage = (clave, arr) =>{
+    localStorage.setItem(clave,JSON.stringify(arr));
+}
+
+/**
+ * guarda en el localstorage la foto si no estaba ya
+ * @param {FotoFavorito} foto 
+ */
+const addFavorito = (foto) => {
+    const arrayFavoritos = loadLocalStorage(key)
+    const arrayCategorias = loadLocalStorage("categorias")
+    if (!arrayFavoritos.some(element => foto.id == element.id)){
+        arrayFavoritos.push(foto)
+        if(!arrayFavoritos.includes(foto.categoria.toLowerCase())){
+            arrayCategorias.push(foto.categoria.toLowerCase())
+        }
+    }
+
+    setLocalStorage(key,arrayFavoritos)
+    setLocalStorage("categorias",arrayCategorias)
+    console.log("foto AÑADIDA de favoritos")
+}
+
+/**
+ * Elimina el elemento con el id igual
+ * @param {number} id 
+ */
+const removeFavorito = (id) =>{
+    const arrayFavoritos = loadLocalStorage(key)
+    const arrayCategorias = loadLocalStorage("categorias")
+    if(arrayFavoritos.length !== 0){
+        const categoria = arrayFavoritos.find(element => element.id == id).categoria
+        const array = arrayFavoritos.map(element => element.categoria == categoria)
+        if (array.length<=1){
+            setLocalStorage("categorias", arrayCategorias.filter(element => element == categoria))
+        }
+        const arrayNuevo = arrayFavoritos.filter(element => element.id != id)
+        setLocalStorage(key,arrayNuevo)
+    }
+    console.log("foto ELIMINADA de favoritos")
+}
+
+/**
+ * Guarda la foto con el id igual que el boton
+ * @param {HTMLElement} btn 
+ */
+const guardarFavorito = async(btn) => {
+    try {
+        const photo = await llamarApi(`${urlBase}/photos/${btn.id}`)
+        console.log(photo)
+        const {id,src:{portrait}, alt, photographer} = photo
+        console.log(alt)
+        const foto = new FotoFavorito(id,portrait,alt,photographer, categoriaActual.toLowerCase())
+        addFavorito(foto)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+/**
+ * Elimina la foto que tenga el mismo id qe el boton
+ * @param {HTMLElement} btn 
+ */
+const eliminarFavorito = (btn) => {
+    removeFavorito(btn.id)
+    if(cardContainerFavoritos){
+        pintarFavoritos()
+    }
+}
 
 
+/**
+ * Si el elemento esta en localstorage lo elimina, sino lo guarda
+ * @param {HTMLElement} btn 
+ */
+const gestionarFavorito = async (btn) =>{
+    //const color = getComputedStyle(btn).getPropertyValue('--color').trim();
+    arrayFavoritos = loadLocalStorage(key)
+    if(arrayFavoritos.some(element => element.id == btn.id)){
+        btn.style.setProperty('--color', 'rgb(206, 202, 202)'); 
+        eliminarFavorito(btn)
+    }
+    else{
+        btn.style.setProperty('--color', 'red');
+        await guardarFavorito(btn)
+    }
+}
 
 
+/**
+ * pinta las fotos favoritas
+ */
+const pintarFavoritos = () =>{
+    const arrayFavoritos = loadLocalStorage(key)
+    pintarPagina(arrayFavoritos,cardContainerFavoritos,false)
+}
 
+const pintarCategoriaFavorito = (categoria) =>{
+    cardContainerFavoritos.innerHTML=""
+    const arrayCategorias = loadLocalStorage("categorias")
+    const arrayFavoritos = loadLocalStorage(key)
+    if(arrayCategorias.includes(categoria.toLowerCase()))
+        pintarPagina(arrayFavoritos.filter(element => element.categoria == categoria.toLowerCase()), cardContainerFavoritos, false)
+    else{
+        const titulo = document.createElement("H2")
+        titulo.textContent = `No hay favoritos de la categoria: ${categoria}`
+        cardContainerFavoritos.append(titulo)
+    }
+}
 
+/**
+ * Mira en que documento html estamos para saber que funcion invocar al cargar la pagina
+ */
+const mirarPaginaHTML = () =>{
+    if (cardContainer){
+        pintarCategorias()
+    }
+
+    if(cardContainerFavoritos){
+        pintarFavoritos()
+    }
+}
 /******************************************************
  * INVOCACIONES
  ******************************************************/
-pintarCategorias()
+mirarPaginaHTML()
