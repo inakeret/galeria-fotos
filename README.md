@@ -50,29 +50,24 @@ Cuenta con un diseño responsive, efectos visuales modernos, y un sistema de alm
   -----------------------------------------------------------------------
   Función                       Descripción
   ----------------------------- -----------------------------------------
-  `llamarApi(url)`              Llama a la API de Pexels y devuelve los
-                                datos en formato JSON.
+  `llamarApi(url)`              Llama a la API de Pexels y devuelve los datos en formato JSON.
 
-  `validarTexto(texto)`         Valida y limpia el texto de búsqueda del
-                                usuario.
+  `validarTexto(texto)`         Valida y limpia el texto de búsqueda del usuario.
 
-  `pintarPagina(data)`          Renderiza las imágenes en el contenedor
-                                principal.
+  `pintarPagina(data)`          Renderiza las imágenes en el contenedor principal.
 
-  `gestionarFavorito(btn)`      Añade o elimina una imagen de los
-                                favoritos (usa localStorage).
+  `gestionarFavorito(btn)`      Añade o elimina una imagen de los favoritos (usa localStorage).
 
-  `gestionarEje(eje)`           Cambia la orientación visual de las
-                                fotos.
+  `gestionarEje(eje)`           Cambia la orientación visual de las fotos.
 
-  `pintarCategorias()`          Muestra tres categorías aleatorias
-                                iniciales.
+  `pintarCategorias()`          Muestra tres categorías aleatorias iniciales.
 
   `pintarFavoritos()`           Carga las fotos favoritas guardadas.
 
-  `crearFotoAgrandada(img)`     Muestra una imagen en tamaño completo
-                                dentro de un overlay.
+  `crearFotoAgrandada(img)`     Muestra una imagen en tamaño completo dentro de un overlay.
+
   -----------------------------------------------------------------------
+
 
 ## Uso y ejecución
 

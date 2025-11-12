@@ -59,7 +59,7 @@ let ejeActual = ""
 let paginaActual = "1"
 
 /**
- * @type
+ * @type {HTMLSelectElement}
  */
 const selectBuscador = document.querySelector("#buscador-categorias")
 
