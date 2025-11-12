@@ -9,7 +9,7 @@ const urlBase = "https://api.pexels.com/v1/"
 /**
  * @type {string} key de la api
  */
-import { apiKey } from "./config.js";
+const apiKey = "HKLxOHGFJLAhYKSc7I1LwKdj74AWmuf9TUOhENxiC1giUHbZP8Ar4o7N"
 
 /**
  * @type {HTMLFormElement}
