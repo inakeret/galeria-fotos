@@ -5,13 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeria de imágenes</title>
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
     <header class="encabezado">
         <div class="logo">
-            <img src="assets/logo.png" alt="Logo de la galería">
+            <a href="index.html">
+                <img src="assets/logo.png" alt="Logo de la galería">
+            </a>
         </div>
 
         <form class="buscador" id="buscador">
@@ -37,11 +39,15 @@
         <section id = "cardContainer" class="card-container"></section>
         <div id="paginadoContainer" class="paginado-container"></div>
     </main>
+
     <footer>
-        <img src="assets/logo.png" alt="Logo de la galería">
-        <p>copyright & Iñaki Steven</p>
+    <img src="assets/logo.png" alt="Logo de la galería Iñaki Steven Imagen&Style-App">
+    <div class="footer-text">
+        <p>&copy; 2025 Iñaki & Steven I&S-App.</p>
+        <p>Todos los derechos reservados.</p>
+    </div>
     </footer>
-    
-    <script src="js/main.js"></script>
+
+    <script  type="module"  src="js/main.js"></script>
 </body>
 </html>

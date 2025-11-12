@@ -14,15 +14,17 @@
 body {
     min-height: 100vh;
     min-width: 280px;
-    position: relative; 
+    position: relative;
     display: flex;
     flex-direction: column;
     background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2cc 100%);
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 /* img */
 img {
     width: 100%;
+    cursor: pointer;
 }
 /* #endregion*/
 
@@ -40,7 +42,7 @@ img {
     gap: 1rem;
 }
 
-.encabezado,   
+.encabezado,
 footer {
     background-image: linear-gradient(-20deg, #f794a4 0%, #fdd6bd 100%);
 }
@@ -58,11 +60,6 @@ main {
     flex-direction: column;
 }
 
-/* aplicado a main pagina-favorito */
-.main-section {
-    margin-top: 2rem;
-}
-
 footer {
     height: 3rem;
     display: flex;
@@ -71,11 +68,11 @@ footer {
     left: 0;
     right: 0;
     margin-top: auto; /* para que se quede fijo abajo*/
-    padding: 20px 10px;
+    padding: 25px 10px;
 }
 
 footer img {
-    max-width: 30px;
+    max-width: 40px;
     margin-right: 5px;
 }
 
@@ -93,7 +90,7 @@ button {
 /*========================================*/
             /* #region:*/
 /* Buscador */
-.buscador {    
+.buscador {
     width: 100%;
     max-width: 400px;
     display: flex;
@@ -101,7 +98,7 @@ button {
     flex: 1;
     margin: 0;
     padding: 10px;
-    gap: 0.5px; 
+    gap: 0.3rem;
 }
 
 /* Barra buscador */
@@ -142,7 +139,7 @@ button {
 /*=== SELECT DE ORIENTACION ===*/
 /*=============================*/
             /*#region:  */
-            
+
 .escondido {
     position: relative;
     display: none; /* Oculto por defecto */
@@ -161,19 +158,39 @@ button {
 /* Mostrar el bloque cuando quieras */
 .escondido.activo {
     display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.buscador-categoria select {
+    width: 300px;
+    background-color: rgba(255, 255, 255, 0.904);
+    border: 3px solid rgba(211, 164, 12, 0.966);
+    color: rgb(0, 0, 0);
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.buscador-categoria select:hover {
+    border-color: rgb(196, 163, 16);
+    box-shadow: 0 0 10px rgba(172, 127, 2, 0.555);
 }
 
 /* Formulario centrado */
 #form-eje {
-    width: 85%;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    padding-left: 20px;
 }
 
 /* Select estilizado */
 #eje {
+
     height: 30%;
-    width: 100%;
+    width: 75%;
     padding: 10px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -191,37 +208,42 @@ button {
     border-color: #2196f3;
     box-shadow: 0 0 4px rgba(33, 150, 243, 0.3);
 }
-
 .reloade-cont {
     position: absolute;
-    right: 30px;
-    top:13px;
-    max-height: 70px;
-    max-width: 70px;
+    max-height: 50px;
+    max-width: 50px;
+    right: 20px;
+    top: 23px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 .reloade-fv {
     position: relative;
-    height: 70px;
-    width: 70px;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
     background-color: white;
 }
 
 .reloade-fv button {
     position: absolute;
-    height: 70px;
-    width: 70px;
+    height: 50px;
+    width: 50px;
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-43%, -50%);
     background-image: linear-gradient(to right, #c3cfe2 0%, #f5f7fa 100%);
-
     border: none;
 }
+
+.reloade-fv button img {
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}
+
 
 /*#endregion de selector de orientación*/
 
@@ -259,7 +281,7 @@ button {
 
 /* imagen categoria */
 .card img {
-    width: 100%;    
+    width: 100%;
     height: 400px;            /* Fijas la altura */
     object-fit: cover;        /* Recorta la imagen sin deformarla */
     border-radius: 8px;
@@ -299,7 +321,7 @@ button {
 /*====  GALERÍA De RESULTADOS / FAVORITOS ====*/
 /*============================================*/
             /* #region:*/
-            
+
 .card-container {
     width: 95%;
     margin-top: 30px;
@@ -313,39 +335,66 @@ button {
 /* BASE para movil -> 1 foto por fila */
 .card-container article {
     flex: 0 0 100%; /* para que ocupe toda la fila */
-    max-width: 500px; /* evitar que crezca demasiado(gjigante) en moviles grandes */
     height: auto;
-    display: flex;    
+    display: flex;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
     font-family: sans-serif;
+
+    /* Glassmorphism */
+    background: rgba(255, 255, 255, 0.2); /* fondo translúcido */
+    backdrop-filter: blur(10px);          /* efecto cristal */
+    -webkit-backdrop-filter: blur(10px);  /* soporte Safari */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* borde suave */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* sombra ligera */
+    transition: transform 0.4s ease; /* suaviza cualquier cambio de escala */
+    
 }
 
 .card-container article figure {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     margin: 0;
     position: relative;
     border-radius: 10px;
+    gap: 1rem;
 }
 
 .card-container article img {
+    max-width: 500px; /* evitar que crezca demasiado(gjigante) en moviles grandes */
     --height: 200px;
     width: 100%;
     height: var(--height);            /*Fijas la altura */
     object-fit: cover;        /* Recorta la imagen sin deformarla */
     transition: transform 0.4s ease;  /* suavidad del efecto */
-    margin-bottom: 10px;
+    border-radius: 8px;
 }
 
+.card-container article  span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+    padding: 10px 10px;
+    gap: 5px;
+}
 
+.card-container article  span p {
+ border: solid;
+ border-radius: 15px;
+ padding: 0.3rem;
 
-.card-container article img:hover {
+  background: rgba(255, 255, 255, 0.089); /* Fondo semitransparente */
+  backdrop-filter: blur(10px); /* El efecto clave que difumina lo de atrás */
+  border-radius: 10px; /* Bordes redondeados */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Borde sutil */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.card-container article:hover {
     transform: scale(1.05);    /* se acerca un poquito */
-    border-radius: 8px;
 }
 /* #endregion*/
 
@@ -373,7 +422,7 @@ button {
     -webkit-backdrop-filter: blur(11px);
 
     border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 
+    box-shadow:
         0 8px 32px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.5),
         inset 0 -1px 0 rgba(255, 255, 255, 0.1),
@@ -399,11 +448,15 @@ button {
   );
 }
 
+.btn-corazon:hover {
+    background-color: rgba(255, 0, 0, 0.479);
+}
+
 
 .btn-favorito {
-    --color: rgb(206, 202, 202); /* color inicial */
-    height: 10px;
-    width: 10px;
+    --color: rgb(206, 202, 202);
+    height: 15px;
+    width: 15px;
     border: none;
     position: relative;
     background-color: var(--color);
@@ -412,37 +465,38 @@ button {
     cursor: pointer;
 }
 
-.btn-favorito::before, 
+.btn-favorito::before,
 .btn-favorito::after {
     content: "";
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 15px;
+    height: 15px;
     background-color: var(--color);
     border-radius: 50%;
 }
 
 .btn-favorito::before {
-    top: -5px;
+    top: -7.5px;
     left: 0;
 }
 
 .btn-favorito::after {
     top: 0;
-    left: 5px;
+    left: 7.5px;
 }
+
 /* #endregion*/
 
 /*=============================*/
-/*========= PAGiNACIÓN =========*/
+/*========= PAGINACIÓN =========*/
 /*=============================*/
             /* #region:*/
-            
+
 .paginado-container ul {
     display: flex;
     justify-content: center;
     list-style-type: none;
-    
+
 }
 
 .btn-paginado {
@@ -454,7 +508,7 @@ button {
     border: 2px solid rgb(170, 147, 18);
     scale: 1;
 
-} 
+}
 
 .btn-paginado:hover {
     scale: 1.3;
@@ -469,11 +523,47 @@ button {
 }
 /* #endregion*/
 
+
+/*=============================*/
+/*====== FOTO AGRANDADA ======*/
+/*=============================*/
+/*#region*/ 
+
+/* Contenedor del overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+/* Imagen grande */
+.imagen-grande {
+    width: 100%;
+    max-width: 100%;
+    height: auto; /* altura se ajusta automáticamente según el ancho */
+}
+
+/* Botón de cerrar */
+.overlay .cerrar {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
+/*#endregion*/
 /*===============================================================
 
                             480px
-                    moviles horizontales        
-===============================================================*/ 
+                    moviles horizontales
+===============================================================*/
 @media (min-width: 480px) {
     /* Ejemplo: aumentar padding general, ajustar tipografía */
     .buscador {
@@ -484,7 +574,7 @@ button {
         display: flex;
         align-items: center;
         gap: 10px;
-        flex: 1; */   
+        flex: 1; */
 
         width: 100%;
         max-width: 95%;
@@ -492,7 +582,7 @@ button {
         flex: 1;
         align-items: center;
         margin: 0;
-        padding: 10px;   
+        padding: 10px;
         gap: 10px;
     }
 
@@ -510,21 +600,11 @@ button {
 /*===============================================================
 
                             768px
-    Pantallas medianas tablets (algunos moviles en horizontal)           
-===============================================================*/ 
+    Pantallas medianas tablets (algunos moviles en horizontal)
+===============================================================*/
 
 @media (min-width: 768px) {
     /* Header pasa de columna a fila */
-
-    /* .buscador { 
-        max-width: 400px; 
-        margin: 0 20px; 
-    } */
-
-    /* .encabezado { 
-        max-width: 400px; 
-        margin: 0 20px; 
-    } */
 
     main {
         display: flex;
@@ -539,9 +619,6 @@ button {
         gap: 1.5rem;
     }
 
-    /* .categorias-container { 
-        justify-content: space-evenly; 
-    } */
     .categorias-container {
         flex-direction: row;
         flex-wrap: wrap;
@@ -564,38 +641,95 @@ button {
         width: auto;
     }
 
-    /* .card-container { 
-        flex-direction: row; 
-        flex-wrap: wrap; 
-        justify-content: center; 
-    } */
     .categoria-container {
         flex: 0 0 calc(50% - 1rem); /* 3 por fila */
         max-width: calc(50% - 1rem);
     }
 
     .card-container article {
-        
+
         flex: 0 0 calc(33.333% - 1rem);
         max-width:  calc(33.333% - 1rem);
     }
-    
+
+    /* Formulario centrado */
+    #form-eje {
+        width: 85%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .buscador-categoria select {
+        width: 600px;
+    }
+
+    /* boton reloade */
+            /* Agrandar un poco el boton y colocarlo a la derecha */
+    .reloade-cont {
+        max-height: 70px;
+        max-width: 70px;
+        right: 30px; /* llevar el boton hacia la derecha para centrarlo */
+        top:13px; /*Centrar altura*/
+    }
+
+    .reloade-fv {
+        height: 70px;
+        width: 70px;
+    }
+
+    .reloade-fv button {
+        height: 70px;
+        width: 70px;
+    }
+
 }
+
+/* Contenedor del overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+/* Imagen grande */
+.overlay .imagen-grande {
+    max-width: 60%;
+    max-height: 90%;
+    height: auto;
+    width: auto;
+    border-radius: 8px;
+}
+/* Botón de cerrar */
+.overlay .cerrar {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+}
+    /*#endregion*/
 
 /*===============================================================
 
                             1024px
-                    Pantallas grandes (laptops)         
+                    Pantallas grandes (laptops)
 ===============================================================*/
 
 @media (min-width: 1024px) {
 
     /* Aumentar anchos máximos, márgenes laterales */
-    .main-section { 
-        width: 90%; 
-        margin: 0 auto; 
+    .main-section {
+        width: 90%;
+        margin: 0 auto;
     }
-    
+
     .categoria-container {
         flex-direction: row;
         flex-wrap: wrap;
@@ -614,13 +748,13 @@ button {
         flex: 0 0 250px; /** ancho fijo */
         max-width: 250px;
     }
-    
+
 }
 
 /*===============================================================
 
                             1280px
-                        Monitores grandes    
+                        Monitores grandes
 ===============================================================*/
 @media (min-width: 1280px) {
     /* añadir espacio entre columnas o aumentar tamaño de texto */
@@ -648,7 +782,7 @@ button {
 
                             1440px
                 --- XL+ (1440px en adelante) ---
-        → monitores muy amplios / pantallas de presentación            
+        → monitores muy amplios / pantallas de presentación
 ===============================================================*/
 
 @media (min-width: 1440px) {

@@ -5,17 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeria de imágenes</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header class="encabezado">
         <div class="logo">
-            <img src="assets/logo.png" alt="Logo de la galería">
+            <a href="index.html">
+                <img src="assets/logo.png" alt="Logo de la galería">
+            </a>
+            
         </div>
 
-        <form class="buscador" id="buscador">
-            <input type="text" placeholder="Buscar imágenes..." name="buscar" required>
-            <button class= "btn" type="submit">Buscar</button>
+        <form class="buscador-categoria" id="buscador-categoria">
+            <select name="buscador-categorias" id="buscador-categorias" type="submit">
+                    
+            </select>
         </form>
 
         <a href="index.html"><button class="btn">Home</button></a>
@@ -31,7 +37,7 @@
                 </select>
                 <div  id="recargar-cont" class="reloade-cont">
                     <div id="recargar-fv" class="reloade-fv">
-                        <button></button>
+                        <button><img src="/assets/reloade.png" alt=""></button>
                     </div>
                 </div>
             </form>
@@ -68,10 +74,15 @@
             </ul> -->
         </div>
     </main>
+
     <footer>
-        <p>© 2025 - Iñaki & Steven.  </p>
+        <img src="assets/logo.png" alt="Logo de la galería Iñaki Steven Imagen&Style-App">
+        <div class="footer-text">
+            <p>&copy; 2025 Iñaki & Steven I&S-App.</p>
+            <p>Todos los derechos reservados.</p>
+        </div>
     </footer>
-    
-    <script src="js/main.js"></script>
+
+    <script  type="module" src="js/main.js"></script>
 </body>
 </html>
